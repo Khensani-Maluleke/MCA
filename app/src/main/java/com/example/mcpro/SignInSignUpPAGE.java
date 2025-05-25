@@ -56,10 +56,12 @@
 
 package com.example.mcpro;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -82,11 +84,11 @@ import java.net.URLEncoder;
 
 public class SignInSignUpPAGE extends AppCompatActivity {
 
-    Button sign_up;
     Button login;
     EditText pass;
     EditText user;
-
+    TextView sign_up;
+    TextView forgotPassword;
     // Your PHP endpoint
     String serverURL = "https://lamp.ms.wits.ac.za/home/s2815983/userSignin.php";
 
@@ -96,7 +98,12 @@ public class SignInSignUpPAGE extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_signup_or_signin);
 
-        sign_up = findViewById(R.id.BtnSignUp);
+        //Code to store the user's session
+        SharedPreferences sharedPreferences = getSharedPreferences("UserSession", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        sign_up = findViewById(R.id.signUpLink);
+        forgotPassword = findViewById(R.id.forgotPasswordLink);
         login = findViewById(R.id.BtnLogin);
         user = findViewById(R.id.usernametext);
         pass = findViewById(R.id.passwordtext);
@@ -110,7 +117,12 @@ public class SignInSignUpPAGE extends AppCompatActivity {
                 if (username.equals("") || password.equals("")) {
                     Toast.makeText(getApplicationContext(), "ENTER BOTH THE USERNAME AND PASSWORD.", Toast.LENGTH_SHORT).show();
                 } else {
-                    registerUser(username, password);
+                    UserAuthService.loginUser(SignInSignUpPAGE.this, username, password);
+                    editor.putString("username", username);
+                    editor.putBoolean("isLoggedIn", true);
+                    editor.putString("lastPage", "MainActivity"); // Or whatever page they go to next
+                    editor.apply();
+
                 }
             }
         });
@@ -123,65 +135,15 @@ public class SignInSignUpPAGE extends AppCompatActivity {
                 startActivity(i);
             }
         });
-    }
 
-    private void registerUser(String username, String password) {
-        Thread thread = new Thread(new Runnable() {
+        forgotPassword.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void run() {
-                try {
-                    URL url = new URL(serverURL);
-                    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                    conn.setRequestMethod("POST");
-                    conn.setDoOutput(true);
-
-                    String postData = "username=" + URLEncoder.encode(username, "UTF-8")
-                            + "&password=" + URLEncoder.encode(password, "UTF-8");
-
-                    OutputStream os = conn.getOutputStream();
-                    BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"));
-                    writer.write(postData);
-                    writer.flush();
-                    writer.close();
-                    os.close();
-
-                    int responseCode = conn.getResponseCode();
-                    if (responseCode == HttpURLConnection.HTTP_OK) {
-                        BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-                        String inputLine;
-                        StringBuilder response = new StringBuilder();
-
-                        while ((inputLine = in.readLine()) != null) {
-                            response.append(inputLine);
-                        }
-                        in.close();
-
-                        String serverResponse = response.toString();
-
-                        runOnUiThread(() -> {
-                            Toast.makeText(getApplicationContext(), serverResponse, Toast.LENGTH_SHORT).show();
-
-                            if (serverResponse.toLowerCase().contains("success")) {
-                                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                                intent.putExtra("name", username);
-                                startActivity(intent);
-                                finish();
-                            }
-                        });
-                    } else {
-                        runOnUiThread(() -> {
-                            Toast.makeText(getApplicationContext(), "Server Error: " + responseCode, Toast.LENGTH_SHORT).show();
-                        });
-                    }
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    runOnUiThread(() -> {
-                        Toast.makeText(getApplicationContext(), "Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
-                    });
-                }
+            public void onClick(View v) {
+                // Directly go to MainActivity (you can implement actual login logic here)
+                Intent i = new Intent(getApplicationContext(), ForgotPassword.class);
+                startActivity(i);
             }
         });
-        thread.start();
     }
+
 }

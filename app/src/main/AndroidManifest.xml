@@ -15,6 +15,27 @@
         android:theme="@style/Theme.MCPRO"
         tools:targetApi="31">
         <activity
+            android:name=".NewPasswordCreation"
+            android:exported="false" />
+        <activity
+            android:name=".ForgotPassword"
+            android:exported="false" />
+        <activity
+            android:name=".CounsellorIssuesActivity"
+            android:exported="false" />
+        <activity
+            android:name=".CounsellorInfoActivity"
+            android:exported="false" />
+        <activity
+            android:name=".SplashScreen"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
             android:name=".NewSignUpPage"
             android:exported="false" />
         <activity
@@ -37,13 +58,7 @@
             android:exported="false" />
         <activity
             android:name=".SignInSignUpPAGE"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            android:exported="true" />
         <activity
             android:name=".Consellorpage"
             android:exported="false" />
