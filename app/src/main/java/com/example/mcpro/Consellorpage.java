@@ -54,8 +54,7 @@ public class Consellorpage extends AppCompatActivity {
                 Boolean checkDepressionState=Depression.isChecked();
                 Boolean checkGeneralState=General.isChecked();
                 Boolean checkGriefLossState=GriefLoss.isChecked();
-//                Intent i=new Intent(getApplicationContext(), ChatActivity.class);
-//                startActivity(i);
+
                 if(checkAnxietyState){
                     issues.add( Anxiety.getText().toString());
                 }
