@@ -105,6 +105,43 @@
                 android:inputType="textPassword" />
         </com.google.android.material.textfield.TextInputLayout>
 
+        <!-- Role Selection -->
+        <TextView
+            android:id="@+id/roleLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Select your role"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="8dp" />
+
+        <RadioGroup
+            android:id="@+id/roleRadioGroup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="24dp">
+
+            <RadioButton
+                android:id="@+id/radioCounsellor"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="counsellor"
+                android:buttonTint="@color/purple_500"
+                android:layout_marginEnd="32dp"
+                android:textSize="16sp" />
+
+            <RadioButton
+                android:id="@+id/radioConsulter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="consulter"
+                android:buttonTint="@color/purple_500"
+                android:textSize="16sp" />
+        </RadioGroup>
+
         <!-- Login Button -->
         <Button
             android:id="@+id/BtnCreateAccount"
@@ -113,6 +150,19 @@
             android:layout_marginBottom="16dp"
             android:text="CREAT ACCOUNT" />
 
+        <!-- Sign Up Link -->
+        <TextView
+            android:id="@+id/signInLink"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="8dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:text="Have an account already? Sign In"
+            android:textColor="?attr/colorPrimary"
+            android:textSize="14sp"
+            android:textStyle="bold" />
 
 
     </LinearLayout>

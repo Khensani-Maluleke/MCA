@@ -2,9 +2,12 @@ package com.example.mcpro;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -40,6 +43,9 @@ public class SignUpPage extends AppCompatActivity {
     EditText confirm_password;
     EditText password;
     Button createButton;
+    RadioGroup roleRadioGroup;
+    RadioButton selectedRoleButton;
+    TextView sign_in;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,11 +54,13 @@ public class SignUpPage extends AppCompatActivity {
         setContentView(R.layout.activity_sign_up_page);
 
         //User inputs
+        roleRadioGroup = findViewById(R.id.roleRadioGroup);
         username = findViewById(R.id.usernametext);
         emailText = findViewById(R.id.email);
         password = findViewById(R.id.Password);
         confirm_password = findViewById(R.id.ConfirmPassword);
         createButton = findViewById(R.id.BtnCreateAccount);
+        sign_in = findViewById(R.id.signInLink);
 
 
         createButton.setOnClickListener(new View.OnClickListener() {
@@ -68,8 +76,26 @@ public class SignUpPage extends AppCompatActivity {
                 } else if (!passwords.equals(confirmPasswords)) {
                     Toast.makeText(getApplicationContext(), "PASSWORDS DON'T MATCH", Toast.LENGTH_SHORT).show();
                 } else {
-                    registerUser(name, passwords, email);
+                    int selectedId = roleRadioGroup.getCheckedRadioButtonId();
+                    if (selectedId == -1) {
+                        Toast.makeText(getApplicationContext(), "Please select a role.", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    selectedRoleButton = findViewById(selectedId);
+                    String role = selectedRoleButton.getText().toString().toLowerCase();
+//                  Toast.makeText(getApplicationContext(), "you selected " + role, Toast.LENGTH_SHORT).show();
+                    registerUser(name, passwords, email, role);
                 }
+            }
+        });
+
+        sign_in.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Directly go to MainActivity (you can implement actual login logic here)
+                Intent i = new Intent(getApplicationContext(), SignInSignUpPAGE.class);
+                startActivity(i);
             }
         });
     }
@@ -92,64 +118,60 @@ public class SignUpPage extends AppCompatActivity {
         return hasUpper && hasLower && hasDigit && hasSpecial;
     }
 
-    private void registerUser(String username, String password, String email) {
-        Thread thread = new Thread(new Runnable() {
+    private void registerUser(String username, String password, String email, String role) {
+        OkHttpClient client = new OkHttpClient();
+
+        RequestBody formBody = new FormBody.Builder()
+                .add("username", username)
+                .add("email", email)
+                .add("password", password)
+                .add("role", role)
+                .build();
+
+        Request request = new Request.Builder()
+                .url(serverURL)
+                .post(formBody)
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
             @Override
-            public void run() {
-                try {
-                    URL url = new URL(serverURL);
-                    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                    conn.setRequestMethod("POST");
-                    conn.setDoOutput(true);
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                runOnUiThread(() ->
+                        Toast.makeText(getApplicationContext(), "Network Error: " + e.getMessage(), Toast.LENGTH_LONG).show()
+                );
+            }
 
-                    String postData = "username=" + URLEncoder.encode(username, "UTF-8")
-                            + "&email=" + URLEncoder.encode(email, "UTF-8")
-                            + "&password=" + URLEncoder.encode(password, "UTF-8");
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                String serverResponse = response.body().string(); //"User registered successfully"
+                Log.e("SERVER_RESPONSE", "Code: " + response.code() + " Body: " + serverResponse);
 
-                    OutputStream os = conn.getOutputStream();
-                    BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"));
-                    writer.write(postData);
-                    writer.flush();
-                    writer.close();
-                    os.close();
+                if (response.isSuccessful()) {
+                    runOnUiThread(() -> {
+                        Toast.makeText(getApplicationContext(), serverResponse, Toast.LENGTH_SHORT).show();
 
-                    int responseCode = conn.getResponseCode();
-                    if (responseCode == HttpURLConnection.HTTP_OK) {
-                        BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-                        String inputLine;
-                        StringBuilder response = new StringBuilder();
-
-                        while ((inputLine = in.readLine()) != null) {
-                            response.append(inputLine);
-                        }
-                        in.close();
-
-                        String serverResponse = response.toString();
-
-                        runOnUiThread(() -> {
-                            Toast.makeText(getApplicationContext(), serverResponse, Toast.LENGTH_SHORT).show();
-
-                            if (serverResponse.toLowerCase().contains("success")) {
-                                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                                intent.putExtra("name", username);
-                                startActivity(intent);
+                        if(serverResponse.toLowerCase().contains("success")) {
+                            if (role.equals("counsellor")){
+                                Intent i = new Intent(getApplicationContext(), Consellorpage.class);
+                                i.putExtra("name", username);
+                                startActivity(i);
+                                finish();
+                            } else {
+                                Intent i = new Intent(getApplicationContext(), Consulterpage.class);
+                                i.putExtra("name", username);
+                                startActivity(i);
                                 finish();
                             }
-                        });
-                    } else {
-                        runOnUiThread(() -> {
-                            Toast.makeText(getApplicationContext(), "Server Error: " + responseCode, Toast.LENGTH_SHORT).show();
-                        });
-                    }
 
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    runOnUiThread(() -> {
-                        Toast.makeText(getApplicationContext(), "Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                        }
                     });
+                } else {
+                    runOnUiThread(() ->
+                        Toast.makeText(getApplicationContext(), "Server Error: " + response.code(), Toast.LENGTH_SHORT).show()
+                    );
                 }
             }
         });
-        thread.start();
     }
+
 }

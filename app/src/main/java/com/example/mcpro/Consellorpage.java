@@ -13,6 +13,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
 
+import okhttp3.OkHttpClient;
+
 public class Consellorpage extends AppCompatActivity {
     CheckBox Anxiety;
     CheckBox Addiction;
@@ -80,5 +82,9 @@ public class Consellorpage extends AppCompatActivity {
 
             }
         });
+    }
+
+    private void saveIssues(){
+        OkHttpClient client = new OkHttpClient();
     }
 }
