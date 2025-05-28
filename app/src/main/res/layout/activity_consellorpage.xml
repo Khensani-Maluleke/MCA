@@ -5,6 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:paddingTop="50dp"
     tools:context=".Consulterpage">
 
     <LinearLayout
@@ -58,7 +59,7 @@
             android:id="@+id/Grief_LossID"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Grief Loss" />
+            android:text="Grief and Loss" />
 
     </LinearLayout>
 
@@ -67,19 +68,20 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="88dp"
-        android:layout_marginTop="52dp"
+        android:layout_marginTop="4dp"
         android:text="What Do You Offer?"
-        android:textSize="20sp"
+        android:textSize="24sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/consellorsubbtn"
-        android:layout_width="match_parent"
+        android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:text="submit"
+        android:layout_marginStart="52dp"
+        android:layout_marginTop="16dp"
+        android:text="Save Profile"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/linearLayout2" />

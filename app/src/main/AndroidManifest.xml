@@ -15,6 +15,21 @@
         android:theme="@style/Theme.MCPRO"
         tools:targetApi="31">
         <activity
+            android:name=".CheckProfileActivity"
+            android:exported="false" />
+        <activity
+            android:name=".CounsellorProfile"
+            android:exported="false" />
+        <activity
+            android:name=".CounsellorPreferences"
+            android:exported="false" />
+        <activity
+            android:name=".CounsellorHomeActivity"
+            android:exported="false" />
+        <activity
+            android:name=".MainActivity"
+            android:exported="false" />
+        <activity
             android:name=".NewPasswordCreation"
             android:exported="false" />
         <activity
@@ -64,9 +79,6 @@
             android:exported="false" />
         <activity
             android:name=".Consulterpage"
-            android:exported="false" />
-        <activity
-            android:name=".MainActivity"
             android:exported="false" />
     </application>
 

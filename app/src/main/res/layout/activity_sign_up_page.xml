@@ -137,7 +137,7 @@
                 android:id="@+id/radioConsulter"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="consulter"
+                android:text="consultor"
                 android:buttonTint="@color/purple_500"
                 android:textSize="16sp" />
         </RadioGroup>

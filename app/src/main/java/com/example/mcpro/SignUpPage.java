@@ -66,10 +66,10 @@ public class SignUpPage extends AppCompatActivity {
         createButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String name = username.getText().toString();
-                String email = emailText.getText().toString();
-                String passwords = password.getText().toString();
-                String confirmPasswords = confirm_password.getText().toString();
+                String name = username.getText().toString().trim();
+                String email = emailText.getText().toString().trim();
+                String passwords = password.getText().toString().trim();
+                String confirmPasswords = confirm_password.getText().toString().trim();
 
                 if (!isStrongPassword(passwords)) {
                     Toast.makeText(getApplicationContext(), "Weak password! Use at least 8 characters with upper, lower, digit, and special character.", Toast.LENGTH_LONG).show();
@@ -152,7 +152,7 @@ public class SignUpPage extends AppCompatActivity {
 
                         if(serverResponse.toLowerCase().contains("success")) {
                             if (role.equals("counsellor")){
-                                Intent i = new Intent(getApplicationContext(), Consellorpage.class);
+                                Intent i = new Intent(getApplicationContext(), MainActivity.class);
                                 i.putExtra("name", username);
                                 startActivity(i);
                                 finish();

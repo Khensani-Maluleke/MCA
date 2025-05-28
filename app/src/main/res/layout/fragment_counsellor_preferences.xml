@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginTop="80dp"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="40dp"
+        android:text="Select Issues You Can Help With"
+        android:textSize="24sp"
+        android:textStyle="bold" />
+
+    <CheckBox
+        android:id="@+id/AnxietyID"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Anxiety" />
+
+    <CheckBox
+        android:id="@+id/AddictionID"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Addiction" />
+
+    <CheckBox
+        android:id="@+id/AbuseID"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Abuse" />
+
+    <CheckBox
+        android:id="@+id/AcademicID"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Academics" />
+
+    <CheckBox
+        android:id="@+id/DeprissionID"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Depression" />
+
+    <CheckBox
+        android:id="@+id/GeneralID"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="General" />
+
+    <CheckBox
+        android:id="@+id/Grief_LossID"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Grief Loss" />
+
+    <Button
+        android:id="@+id/btn_next"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="270dp"
+        android:layout_marginTop="24dp"
+        android:text="Next" />
+
+</LinearLayout>

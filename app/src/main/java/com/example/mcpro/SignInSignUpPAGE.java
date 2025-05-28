@@ -5,6 +5,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -15,6 +17,8 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+
+import com.example.mcpro.utils.SessionManager;
 
 import org.json.JSONObject;
 
@@ -43,10 +47,11 @@ public class SignInSignUpPAGE extends AppCompatActivity {
     EditText pass;
     EditText user;
     TextView forgotPwd;
-
+    RadioGroup roleRadioGroup;
+    RadioButton selectedRoleButton;
     // Your PHP endpoint
     String serverURL = "https://lamp.ms.wits.ac.za/home/s2815983/userSignin.php";
-    String userRoleURL = "https://lamp.ms.wits.ac.za/home/s2815983/userRoleURL.php";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +59,7 @@ public class SignInSignUpPAGE extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_signup_or_signin);
 
+        roleRadioGroup = findViewById(R.id.roleRadioGroup);
         forgotPwd = findViewById(R.id.forgotPasswordLink);
         sign_up = findViewById(R.id.signUpLink);
         login = findViewById(R.id.BtnLogin);
@@ -69,7 +75,14 @@ public class SignInSignUpPAGE extends AppCompatActivity {
                 if (username.equals("") || password.equals("")) {
                     Toast.makeText(getApplicationContext(), "ENTER BOTH THE USERNAME AND PASSWORD.", Toast.LENGTH_SHORT).show();
                 } else {
-                    logUser(username, password);
+                    int selectedId = roleRadioGroup.getCheckedRadioButtonId();
+                    if (selectedId == -1) {
+                        Toast.makeText(getApplicationContext(), "Please select a role.", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    selectedRoleButton = findViewById(selectedId);
+                    String role = selectedRoleButton.getText().toString().toLowerCase();
+                    logUser(username, password, role);
                 }
             }
         });
@@ -93,7 +106,7 @@ public class SignInSignUpPAGE extends AppCompatActivity {
         });
     }
 
-private void logUser(String username, String password) {
+private void logUser(String username, String password, String role) {
     Thread thread = new Thread(() -> {
         try {
             URL url = new URL(serverURL);
@@ -102,7 +115,8 @@ private void logUser(String username, String password) {
             conn.setDoOutput(true);
 
             String postData = "username=" + URLEncoder.encode(username, "UTF-8")
-                    + "&password=" + URLEncoder.encode(password, "UTF-8");
+                    + "&password=" + URLEncoder.encode(password, "UTF-8")
+                    + "&role=" + URLEncoder.encode(role, "UTF-8");
 
             OutputStream os = conn.getOutputStream();
             BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"));
@@ -128,14 +142,18 @@ private void logUser(String username, String password) {
                     try {
                         JSONObject jsonResponse = new JSONObject(serverResponse);
                         if (jsonResponse.has("message") && jsonResponse.getString("message").toLowerCase().contains("success")) {
-                            String role = jsonResponse.getString("role").toLowerCase();
 
-                            Toast.makeText(getApplicationContext(), "Welcome, " + role, Toast.LENGTH_SHORT).show();
+                            SessionManager sessionManager = new SessionManager(SignInSignUpPAGE.this);
+                            sessionManager.setUsername(username);
+                            sessionManager.setLogin(true); // Mark the user as logged in
+                            sessionManager.setRole(role); // Save role if needed
+                            Toast.makeText(getApplicationContext(), "Welcome, " + sessionManager.getUsername() + ". "+ sessionManager.getRole(), Toast.LENGTH_SHORT).show();
 
                             if (role.equals("counsellor")) {
-                                Intent intent = new Intent(getApplicationContext(), Consellorpage.class);
+                                Intent intent = new Intent(getApplicationContext(), CheckProfileActivity.class);
                                 startActivity(intent);
-                            } else if (role.equals("consulter")) {
+
+                            } else if (role.equals("consultor")) {
                                 Intent intent = new Intent(getApplicationContext(), Consulterpage.class);
                                 startActivity(intent);
                             }
@@ -167,61 +185,4 @@ private void logUser(String username, String password) {
     thread.start();
 }
 
-//    private void logUser(String username, String password) {
-//        Thread thread = new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//                try {
-//                    URL url = new URL(serverURL);
-//                    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-//                    conn.setRequestMethod("POST");
-//                    conn.setDoOutput(true);
-//
-//                    String postData = "username=" + URLEncoder.encode(username, "UTF-8")
-//                            + "&password=" + URLEncoder.encode(password, "UTF-8");
-//
-//                    OutputStream os = conn.getOutputStream();
-//                    BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"));
-//                    writer.write(postData);
-//                    writer.flush();
-//                    writer.close();
-//                    os.close();
-//
-//                    int responseCode = conn.getResponseCode();
-//                    if (responseCode == HttpURLConnection.HTTP_OK) {
-//                        BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-//                        String inputLine;
-//                        StringBuilder response = new StringBuilder();
-//
-//                        while ((inputLine = in.readLine()) != null) {
-//                            response.append(inputLine);
-//                        }
-//                        in.close();
-//
-//                        String serverResponse = response.toString();
-//
-//                        runOnUiThread(() -> {
-//                            Toast.makeText(getApplicationContext(), serverResponse, Toast.LENGTH_SHORT).show();
-//
-//                            if (serverResponse.toLowerCase().contains("success")) {
-//
-//
-//                            }
-//                        });
-//                    } else {
-//                        runOnUiThread(() -> {
-//                            Toast.makeText(getApplicationContext(), "Server Error: " + responseCode, Toast.LENGTH_SHORT).show();
-//                        });
-//                    }
-//
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                    runOnUiThread(() -> {
-//                        Toast.makeText(getApplicationContext(), "Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
-//                    });
-//                }
-//            }
-//        });
-//        thread.start();
-//    }
 }
