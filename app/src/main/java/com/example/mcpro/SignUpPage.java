@@ -18,6 +18,8 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.mcpro.utils.SessionManager;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -152,12 +154,16 @@ public class SignUpPage extends AppCompatActivity {
 
                         if(serverResponse.toLowerCase().contains("success")) {
                             if (role.equals("counsellor")){
-                                Intent i = new Intent(getApplicationContext(), MainActivity.class);
+                                SessionManager sessionManager = new SessionManager(SignUpPage.this);
+                                sessionManager.setUsername(username);
+                                Intent i = new Intent(getApplicationContext(), CheckProfileActivity.class);
                                 i.putExtra("name", username);
                                 startActivity(i);
                                 finish();
                             } else {
-                                Intent i = new Intent(getApplicationContext(), Consulterpage.class);
+                                SessionManager sessionManager = new SessionManager(SignUpPage.this);
+                                sessionManager.setUsername(username);
+                                Intent i = new Intent(getApplicationContext(), CheckIssueSelection.class);
                                 i.putExtra("name", username);
                                 startActivity(i);
                                 finish();

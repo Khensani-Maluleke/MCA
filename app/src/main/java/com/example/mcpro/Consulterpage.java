@@ -14,6 +14,7 @@ import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.mcpro.ChatFunctionality.ChatActivity;
 import com.example.mcpro.utils.SessionManager;
 
 import org.json.JSONArray;
@@ -108,7 +109,7 @@ public class Consulterpage extends AppCompatActivity {
                                 String message = responseJson.getString("success");
                                 Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
 
-                                Intent i = new Intent(getApplicationContext(), CounsellorHomeActivity.class);
+                                Intent i = new Intent(getApplicationContext(), ChatActivity.class);
                                 i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                 startActivity(i);
                                 finish();
@@ -117,7 +118,7 @@ public class Consulterpage extends AppCompatActivity {
                                 Toast.makeText(getApplicationContext(), "Server Error: " + errorMsg, Toast.LENGTH_SHORT).show();
                             }
                         } else {
-                            Toast.makeText(getApplicationContext(), "Server returned status code: " + response.code(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), "Server returned status code: " + responseJson, Toast.LENGTH_SHORT).show();
                             //Toast.makeText(getApplicationContext(), "Server returned : " + response.body().string(), Toast.LENGTH_SHORT).show();
                         }
 
