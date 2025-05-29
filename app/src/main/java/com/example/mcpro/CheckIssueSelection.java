@@ -29,9 +29,9 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-public class CheckProfileActivity extends AppCompatActivity {
+public class CheckIssueSelection extends AppCompatActivity {
 
-    String isprofileCompletedURL = "https://lamp.ms.wits.ac.za/home/s2815983/isprofileCompleted.php";
+    String hasIssueURL = "https://lamp.ms.wits.ac.za/home/s2815983/hasIssue.php";
     ProgressBar progressBar;
     String username; // Pass this from LoginActivity or store in SharedPreferences
     private static final int DELAY_MILLIS = 2000; // 2 seconds delay
@@ -44,7 +44,7 @@ public class CheckProfileActivity extends AppCompatActivity {
         progressBar = findViewById(R.id.progressBar);
 
         // Assume username is stored in SharedPreferences
-        SessionManager sessionManager = new SessionManager(CheckProfileActivity.this);
+        SessionManager sessionManager = new SessionManager(CheckIssueSelection.this);
         String username = sessionManager.getUsername();
 
         if (username != null) {
@@ -65,7 +65,7 @@ public class CheckProfileActivity extends AppCompatActivity {
                 .build();
 
         Request request = new Request.Builder()
-                .url(isprofileCompletedURL) // replace with your real URL
+                .url(hasIssueURL) // replace with your real URL
                 .post(formBody)
                 .build();
 
@@ -74,7 +74,7 @@ public class CheckProfileActivity extends AppCompatActivity {
             public void onFailure(Call call, IOException e) {
                 runOnUiThread(() -> {
                     progressBar.setVisibility(View.GONE);
-                    Toast.makeText(CheckProfileActivity.this, "Failed to connect", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(CheckIssueSelection.this, "Failed to connect", Toast.LENGTH_SHORT).show();
                 });
             }
 
@@ -89,9 +89,9 @@ public class CheckProfileActivity extends AppCompatActivity {
                         runOnUiThread(() -> {
                             progressBar.setVisibility(View.GONE);
                             if (profileComplete) {
-                                startActivity(new Intent(CheckProfileActivity.this, ChatActivity.class));
+                                startActivity(new Intent(CheckIssueSelection.this, ChatActivity.class));
                             } else {
-                                startActivity(new Intent(CheckProfileActivity.this, Consellorpage.class));
+                                startActivity(new Intent(CheckIssueSelection.this, Consulterpage.class));
                             }
                             finish();
                         });
@@ -100,70 +100,16 @@ public class CheckProfileActivity extends AppCompatActivity {
                         e.printStackTrace();
                         runOnUiThread(() -> {
                             progressBar.setVisibility(View.GONE);
-                            Toast.makeText(CheckProfileActivity.this, "Invalid response", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(CheckIssueSelection.this, "Invalid response", Toast.LENGTH_SHORT).show();
                         });
                     }
                 } else {
                     runOnUiThread(() -> {
                         progressBar.setVisibility(View.GONE);
-                        Toast.makeText(CheckProfileActivity.this, "Server error", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(CheckIssueSelection.this, "Server error", Toast.LENGTH_SHORT).show();
                     });
                 }
             }
         });
     }
-//    private void checkProfileCompletion(String username) {
-//        progressBar.setVisibility(View.VISIBLE);
-//
-//        OkHttpClient client = new OkHttpClient();
-//
-//        RequestBody formBody = new FormBody.Builder()
-//                .add("username", username)
-//                .build();
-//
-//        Request request = new Request.Builder()
-//                .url(isprofileCompletedURL)
-//                .post(formBody)
-//                .build();
-//
-//        client.newCall(request).enqueue(new Callback() {
-//            @Override
-//            public void onFailure(Call call, IOException e) {
-//                runOnUiThread(() -> {
-//                    progressBar.setVisibility(View.GONE);
-//                    Toast.makeText(CheckProfileActivity.this, "Network error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-//                });
-//            }
-//
-//            @Override
-//            public void onResponse(Call call, Response response) throws IOException {
-//                runOnUiThread(() -> progressBar.setVisibility(View.GONE));
-//
-//                if (!response.isSuccessful()) {
-//                    runOnUiThread(() -> Toast.makeText(CheckProfileActivity.this, "Server error: " + response.code(), Toast.LENGTH_SHORT).show());
-//                    return;
-//                }
-//
-//                String responseBody = response.body().string();
-//
-//                try {
-//                    JSONObject json = new JSONObject(responseBody);
-//                    boolean profileComplete = json.getBoolean("profile_complete");
-//
-//                    runOnUiThread(() -> {
-//                        if (profileComplete) {
-//                            startActivity(new Intent(CheckProfileActivity.this, CounsellorHomeActivity.class));
-//                        } else {
-//                            startActivity(new Intent(CheckProfileActivity.this, Consellorpage.class));
-//                        }
-//                        finish(); // Close splash/check screen
-//                    });
-//
-//                } catch (JSONException e) {
-//                    runOnUiThread(() -> Toast.makeText(CheckProfileActivity.this, "Invalid JSON response", Toast.LENGTH_SHORT).show());
-//                }
-//            }
-//        });
-//    }
-
 }

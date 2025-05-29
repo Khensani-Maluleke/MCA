@@ -154,7 +154,7 @@ private void logUser(String username, String password, String role) {
                                 startActivity(intent);
 
                             } else if (role.equals("consultor")) {
-                                Intent intent = new Intent(getApplicationContext(), Consulterpage.class);
+                                Intent intent = new Intent(getApplicationContext(), CheckIssueSelection.class);
                                 startActivity(intent);
                             }
 

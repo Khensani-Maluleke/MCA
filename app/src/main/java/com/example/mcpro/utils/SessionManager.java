@@ -13,6 +13,7 @@ public class SessionManager {
     private static final String KEY_ISSUES_DONE = "issuesCompleted";
     private static final String KEY_PROFILE_DONE = "profileCompleted";
     private static final String KEY_USERNAME = "username";
+    private static final String KEY_EMAIL = "email";
     private static final String KEY_ROLE = "role";
 
     public SessionManager(Context context) {
@@ -58,6 +59,16 @@ public class SessionManager {
 
     public String getUsername() {
         return prefs.getString(KEY_USERNAME, null);
+    }
+
+    // Store email
+    public void setEmail(String email) {
+        editor.putString(KEY_USERNAME, email);
+        editor.apply();
+    }
+
+    public String getEmail() {
+        return prefs.getString(KEY_EMAIL, null);
     }
 
     // Store user role

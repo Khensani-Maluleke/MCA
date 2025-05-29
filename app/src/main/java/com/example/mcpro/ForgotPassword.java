@@ -1,10 +1,13 @@
 package com.example.mcpro;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -12,6 +15,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+
+import com.example.mcpro.utils.SessionManager;
 
 import java.io.IOException;
 
@@ -27,12 +32,15 @@ public class ForgotPassword extends AppCompatActivity {
 
     EditText email;
     Button reset;
+    RadioGroup roleRadioGroup;
+    RadioButton selectedRoleButton;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_forgot_password);
 
+        roleRadioGroup = findViewById(R.id.roleRadioGroup);
         email = findViewById(R.id.emailAddress);
         reset = findViewById(R.id.BtnReset);
 
@@ -42,24 +50,35 @@ public class ForgotPassword extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String emailS = email.getText().toString().trim();
+                int selectedId = roleRadioGroup.getCheckedRadioButtonId();
+
                 if(emailS.isEmpty()) {//similar to emailS.equals("")
                     Toast.makeText(getApplicationContext(), "Please enter your email on the required field", Toast.LENGTH_SHORT).show();
+                } else if (selectedId == -1) {
+                    Toast.makeText(getApplicationContext(), "Please select a role.", Toast.LENGTH_SHORT).show();
+                    return;
                 } else {
-                    sendResetRequest(emailS);
+                    selectedRoleButton = findViewById(selectedId);
+                    String role = selectedRoleButton.getText().toString().toLowerCase();
+                    sendResetRequest(emailS, role);
                 }
 
             }
         });
     }
 
-    private void sendResetRequest(String email) {
+    private void sendResetRequest(String email, String role) {
         String URL = "https://lamp.ms.wits.ac.za/home/s2815983/request_password_reset.php";
 
         OkHttpClient client = new OkHttpClient();
+        SessionManager sessionManager = new SessionManager(ForgotPassword.this);
+        sessionManager.setEmail(email);
+        sessionManager.setRole(role);
 
         // Form body with email parameter
         RequestBody formBody = new FormBody.Builder()
                 .add("email", email)
+                .add("role", role)
                 .build();
 
         // Build the POST request
@@ -87,8 +106,12 @@ public class ForgotPassword extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     System.out.println("I am on onResponse");
                     // This also runs on a background thread
-                    runOnUiThread(() ->
-                            Toast.makeText(getApplicationContext(), res, Toast.LENGTH_LONG).show()
+                    runOnUiThread(() -> {
+                        Toast.makeText(getApplicationContext(), res, Toast.LENGTH_LONG).show();
+                        Intent intent = new Intent(getApplicationContext(), EnterCodeActivity.class);
+                        startActivity(intent);
+                            }
+
                     );
                 } else {
                     runOnUiThread(() ->

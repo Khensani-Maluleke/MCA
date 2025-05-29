@@ -15,6 +15,18 @@
         android:theme="@style/Theme.MCPRO"
         tools:targetApi="31">
         <activity
+            android:name=".EnterCodeActivity"
+            android:exported="false" />
+        <activity
+            android:name=".CheckIssueSelection"
+            android:exported="false" />
+        <activity
+            android:name=".ChatFunctionality.ChatAdapter"
+            android:exported="false" />
+        <activity
+            android:name=".ChatFunctionality.ChatActivity"
+            android:exported="false" />
+        <activity
             android:name=".CheckProfileActivity"
             android:exported="false" />
         <activity
