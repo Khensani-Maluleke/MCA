@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.mcpro.utils.SessionManager;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.io.IOException;
@@ -49,22 +50,26 @@ public class EnterCodeActivity extends AppCompatActivity {
         setupInputWatcher(digit4, digit5);
         setupInputWatcher(digit5, digit6);
 
-        //Get user's details from session
-        SessionManager sessionManager = new SessionManager(EnterCodeActivity.this);
-        sessionManager.getEmail();
-        sessionManager.getRole();
-
         btnVerify.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String code = getEnteredCode();
+                String code = getEnteredCode().trim();
                 if (code.length() == 6) {
                     // Send to backend or verify
-                    Toast.makeText(EnterCodeActivity.this, "Entered code: " + code, Toast.LENGTH_SHORT).show();
-                    verifyToken(code);
+                    //verifyToken(code);
                     // TODO: Send `code` to your backend for validation
+                    new MaterialAlertDialogBuilder(EnterCodeActivity.this)
+                            .setTitle("Code")
+                            .setMessage("You entered the code " + code)
+                            .setIcon(R.drawable.error_icon) // Replace with your own icon
+                            .setPositiveButton("OK", (dialog, which) -> {
+                                dialog.dismiss();
+                                //startActivity(new Intent(getApplicationContext(), ForgotPassword.class));
+                            })
+                            .show();
                 } else {
                     Toast.makeText(EnterCodeActivity.this, "Please enter all 6 digits", Toast.LENGTH_SHORT).show();
+
                 }
             }
         });
@@ -92,19 +97,29 @@ public class EnterCodeActivity extends AppCompatActivity {
     }
 
     private void verifyToken(String token) {
-        //Get user's details from session
+
+        OkHttpClient client = new OkHttpClient();
+        // Get user's details from session
         SessionManager sessionManager = new SessionManager(EnterCodeActivity.this);
         String email = sessionManager.getEmail();
         String role = sessionManager.getRole();
+
         if (email.equals("") || role.equals("")) {
-            Toast.makeText(getApplicationContext(), "Invalid attempt to reset password", Toast.LENGTH_SHORT).show();
-            Intent intent  = new Intent(getApplicationContext(), ForgotPassword.class);
-            startActivity(intent);
+            new MaterialAlertDialogBuilder(EnterCodeActivity.this)
+                    .setTitle("Invalid Attempt")
+                    .setMessage("Missing email or role in session. Please try again.")
+                    .setIcon(R.drawable.error_icon) // Replace with your own icon
+                    .setPositiveButton("OK", (dialog, which) -> {
+                        dialog.dismiss();
+                        startActivity(new Intent(getApplicationContext(), ForgotPassword.class));
+                    })
+                    .show();
             return;
         }
 
-        OkHttpClient client = new OkHttpClient();
-        // Form body with email parameter
+
+
+        // Build the form body
         RequestBody formBody = new FormBody.Builder()
                 .add("token", token)
                 .add("email", email)
@@ -117,35 +132,54 @@ public class EnterCodeActivity extends AppCompatActivity {
                 .post(formBody)
                 .build();
 
-        // Make the request asynchronously
+        // Execute request asynchronously
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                // This runs on a background thread
-                Log.d("error", e.toString());
-                runOnUiThread(() ->
-                        Toast.makeText(getApplicationContext(), "Something went wrong.", Toast.LENGTH_SHORT).show()
-                );
+                runOnUiThread(() -> new MaterialAlertDialogBuilder(EnterCodeActivity.this)
+                        .setTitle("Network Error")
+                        .setMessage("Something went wrong: " + e.getMessage())
+                        .setIcon(R.drawable.error_icon)
+                        .setPositiveButton("Retry", (dialog, which) -> dialog.dismiss())
+                        .show());
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                String res = response.body().string();  // Always get the body first
+                String res = response.body().string().trim(); // trim to avoid whitespace issues
 
-                if (response.isSuccessful()) {
-
-                    runOnUiThread(() -> {
-                                Toast.makeText(getApplicationContext(), res, Toast.LENGTH_LONG).show();
-                                Intent intent = new Intent(getApplicationContext(), NewPasswordCreation.class);
-                                startActivity(intent);
-                            }
-                    );
-                } else {
-                    runOnUiThread(() ->
-                            Toast.makeText(getApplicationContext(), "Server error.", Toast.LENGTH_SHORT).show()
-                    );
-                }
+                runOnUiThread(() -> {
+                    if (response.isSuccessful()) {
+                        if (res.contains("successful")) {
+                            new MaterialAlertDialogBuilder(EnterCodeActivity.this)
+                                    .setTitle("Success")
+                                    .setMessage("Code verification successful.")
+                                    .setIcon(R.drawable.success_icon)
+                                    .setPositiveButton("Continue", (dialog, which) -> {
+                                        dialog.dismiss();
+                                        Intent intent = new Intent(getApplicationContext(), NewPasswordCreation.class);
+                                        startActivity(intent);
+                                    })
+                                    .show();
+                        } else {
+                            new MaterialAlertDialogBuilder(EnterCodeActivity.this)
+                                    .setTitle("Verification Failed")
+                                    .setMessage(res) // backend message: "Token verification failed.", etc.
+                                    .setIcon(R.drawable.error_icon)
+                                    .setPositiveButton("Retry", (dialog, which) -> dialog.dismiss())
+                                    .show();
+                        }
+                    } else {
+                        new MaterialAlertDialogBuilder(EnterCodeActivity.this)
+                                .setTitle("Server Error")
+                                .setMessage("Server returned an error. Please try again.")
+                                .setIcon(R.drawable.error_icon)
+                                .setPositiveButton("Close", (dialog, which) -> dialog.dismiss())
+                                .show();
+                    }
+                });
             }
         });
     }
+
 }

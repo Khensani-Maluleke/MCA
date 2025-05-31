@@ -15,6 +15,12 @@
         android:theme="@style/Theme.MCPRO"
         tools:targetApi="31">
         <activity
+            android:name=".ChatFunctionality.ChatWindow"
+            android:exported="false" />
+        <activity
+            android:name=".ChatMainActivity"
+            android:exported="false" />
+        <activity
             android:name=".EnterCodeActivity"
             android:exported="false" />
         <activity

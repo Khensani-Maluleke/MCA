@@ -14,6 +14,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.mcpro.ChatFunctionality.ChatActivity;
+import com.example.mcpro.ChatFunctionality.ChatWindow;
 import com.example.mcpro.utils.SessionManager;
 
 import org.json.JSONException;
@@ -86,10 +87,11 @@ public class CheckIssueSelection extends AppCompatActivity {
                         JSONObject json = new JSONObject(res);
                         boolean profileComplete = json.getBoolean("profile_complete");
 
+
                         runOnUiThread(() -> {
                             progressBar.setVisibility(View.GONE);
                             if (profileComplete) {
-                                startActivity(new Intent(CheckIssueSelection.this, ChatActivity.class));
+                                startActivity(new Intent(CheckIssueSelection.this, ChatWindow.class));
                             } else {
                                 startActivity(new Intent(CheckIssueSelection.this, Consulterpage.class));
                             }

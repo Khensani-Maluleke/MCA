@@ -19,6 +19,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 
 import com.example.mcpro.utils.SessionManager;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import org.json.JSONObject;
 
@@ -147,7 +148,15 @@ private void logUser(String username, String password, String role) {
                             sessionManager.setUsername(username);
                             sessionManager.setLogin(true); // Mark the user as logged in
                             sessionManager.setRole(role); // Save role if needed
-                            Toast.makeText(getApplicationContext(), "Welcome, " + sessionManager.getUsername() + ". "+ sessionManager.getRole(), Toast.LENGTH_SHORT).show();
+                            new MaterialAlertDialogBuilder(SignInSignUpPAGE.this)
+                                    .setTitle("Welcome")
+                                    .setMessage("Successfully logged in")
+                                    .setIcon(R.drawable.couples_therapy)
+                                    .setPositiveButton("OK", (dialog, which) -> {
+                                        dialog.dismiss();
+                                    })
+                                    .show();
+
 
                             if (role.equals("counsellor")) {
                                 Intent intent = new Intent(getApplicationContext(), CheckProfileActivity.class);

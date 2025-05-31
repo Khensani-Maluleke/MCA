@@ -16,8 +16,10 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.mcpro.ChatFunctionality.ChatActivity;
 import com.example.mcpro.utils.SessionManager;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -34,6 +36,7 @@ public class Consulterpage extends AppCompatActivity {
     RadioGroup radioGroup;
     Button subb;
     String storeConsultorIssueURL = "https://lamp.ms.wits.ac.za/home/s2815983/storeIssue.php";
+    String assignCounsellorURL = "https://lamp.ms.wits.ac.za/home/s2815983/assign_counsellor.php";
 
 
     @Override
@@ -107,12 +110,11 @@ public class Consulterpage extends AppCompatActivity {
                         if (response.isSuccessful()) {
                             if (responseJson.has("success")) {
                                 String message = responseJson.getString("success");
+                                int consultor_id = responseJson.getInt("consultor_id");
+                                int issue_id = responseJson.getInt("issue_id");
                                 Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
 
-                                Intent i = new Intent(getApplicationContext(), ChatActivity.class);
-                                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                startActivity(i);
-                                finish();
+                                assignConsultor(consultor_id, issue_id);
                             } else if (responseJson.has("error")) {
                                 String errorMsg = responseJson.getString("error");
                                 Toast.makeText(getApplicationContext(), "Server Error: " + errorMsg, Toast.LENGTH_SHORT).show();
@@ -132,4 +134,63 @@ public class Consulterpage extends AppCompatActivity {
 
         });
     }
+
+    private void assignConsultor(int consultorId, int issueId) {
+        OkHttpClient client = new OkHttpClient();
+
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("consultor_id", consultorId);
+            jsonObject.put("issue_id", issueId);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        RequestBody body = RequestBody.create(
+                jsonObject.toString(),
+                MediaType.parse("application/json; charset=utf-8")
+        );
+
+        Request request = new Request.Builder()
+                .url(assignCounsellorURL) // replace with actual URL
+                .post(body)
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                e.printStackTrace();
+                // Handle failure (show error on UI thread)
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String responseBody = response.body().string(); // This must happen before runOnUiThread
+
+                if (response.isSuccessful()) {
+                    Log.d("AssignAPI", responseBody);
+
+                    runOnUiThread(() -> {
+                        new MaterialAlertDialogBuilder(Consulterpage.this)
+                                .setTitle("Counsellor found!")
+                                .setMessage("You have been successfully linked to a counsellor. Click Ok to proceed!")
+                                .setIcon(R.drawable.success_icon) // Replace with your own icon
+                                .setPositiveButton("OK", (dialog, which) -> {
+                                    dialog.dismiss();
+                                    Intent i = new Intent(getApplicationContext(), ChatActivity.class);
+                                    i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                    startActivity(i);
+                                    finish();
+                                })
+                                .show();
+                    });
+
+                } else {
+                    Log.e("AssignAPI", "Error: " + response.code());
+                }
+            }
+
+        });
+    }
+
 }

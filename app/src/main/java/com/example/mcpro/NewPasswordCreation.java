@@ -38,8 +38,6 @@ public class NewPasswordCreation extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "Weak password! Use at least 8 characters with upper, lower, digit, and special character.", Toast.LENGTH_LONG).show();
                 } else if (!password.equals(confirmPassword)) {
                     Toast.makeText(getApplicationContext(), "PASSWORDS DON'T MATCH", Toast.LENGTH_SHORT).show();
-                } else {
-                    //registerUser(name, passwords, email);
                 }
             }
         });

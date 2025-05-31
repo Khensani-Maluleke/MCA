@@ -14,6 +14,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.mcpro.ChatFunctionality.ChatActivity;
+import com.example.mcpro.ChatFunctionality.ChatWindow;
 import com.example.mcpro.utils.SessionManager;
 
 import org.json.JSONException;
@@ -89,7 +90,7 @@ public class CheckProfileActivity extends AppCompatActivity {
                         runOnUiThread(() -> {
                             progressBar.setVisibility(View.GONE);
                             if (profileComplete) {
-                                startActivity(new Intent(CheckProfileActivity.this, ChatActivity.class));
+                                startActivity(new Intent(CheckProfileActivity.this, ChatWindow.class));
                             } else {
                                 startActivity(new Intent(CheckProfileActivity.this, Consellorpage.class));
                             }
@@ -112,58 +113,4 @@ public class CheckProfileActivity extends AppCompatActivity {
             }
         });
     }
-//    private void checkProfileCompletion(String username) {
-//        progressBar.setVisibility(View.VISIBLE);
-//
-//        OkHttpClient client = new OkHttpClient();
-//
-//        RequestBody formBody = new FormBody.Builder()
-//                .add("username", username)
-//                .build();
-//
-//        Request request = new Request.Builder()
-//                .url(isprofileCompletedURL)
-//                .post(formBody)
-//                .build();
-//
-//        client.newCall(request).enqueue(new Callback() {
-//            @Override
-//            public void onFailure(Call call, IOException e) {
-//                runOnUiThread(() -> {
-//                    progressBar.setVisibility(View.GONE);
-//                    Toast.makeText(CheckProfileActivity.this, "Network error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-//                });
-//            }
-//
-//            @Override
-//            public void onResponse(Call call, Response response) throws IOException {
-//                runOnUiThread(() -> progressBar.setVisibility(View.GONE));
-//
-//                if (!response.isSuccessful()) {
-//                    runOnUiThread(() -> Toast.makeText(CheckProfileActivity.this, "Server error: " + response.code(), Toast.LENGTH_SHORT).show());
-//                    return;
-//                }
-//
-//                String responseBody = response.body().string();
-//
-//                try {
-//                    JSONObject json = new JSONObject(responseBody);
-//                    boolean profileComplete = json.getBoolean("profile_complete");
-//
-//                    runOnUiThread(() -> {
-//                        if (profileComplete) {
-//                            startActivity(new Intent(CheckProfileActivity.this, CounsellorHomeActivity.class));
-//                        } else {
-//                            startActivity(new Intent(CheckProfileActivity.this, Consellorpage.class));
-//                        }
-//                        finish(); // Close splash/check screen
-//                    });
-//
-//                } catch (JSONException e) {
-//                    runOnUiThread(() -> Toast.makeText(CheckProfileActivity.this, "Invalid JSON response", Toast.LENGTH_SHORT).show());
-//                }
-//            }
-//        });
-//    }
-
 }

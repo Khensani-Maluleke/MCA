@@ -17,6 +17,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.mcpro.utils.SessionManager;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.io.IOException;
 
@@ -53,9 +54,23 @@ public class ForgotPassword extends AppCompatActivity {
                 int selectedId = roleRadioGroup.getCheckedRadioButtonId();
 
                 if(emailS.isEmpty()) {//similar to emailS.equals("")
-                    Toast.makeText(getApplicationContext(), "Please enter your email on the required field", Toast.LENGTH_SHORT).show();
+                    new MaterialAlertDialogBuilder(ForgotPassword.this)
+                            .setTitle("Failure")
+                            .setMessage("Please enter your email address")
+                            .setIcon(R.drawable.couples_therapy)
+                            .setPositiveButton("OK", (dialog, which) -> {
+                                dialog.dismiss();
+                            })
+                            .show();
                 } else if (selectedId == -1) {
-                    Toast.makeText(getApplicationContext(), "Please select a role.", Toast.LENGTH_SHORT).show();
+                    new MaterialAlertDialogBuilder(ForgotPassword.this)
+                            .setTitle("Failure")
+                            .setMessage("Please select your role")
+                            .setIcon(R.drawable.couples_therapy)
+                            .setPositiveButton("OK", (dialog, which) -> {
+                                dialog.dismiss();
+                            })
+                            .show();
                     return;
                 } else {
                     selectedRoleButton = findViewById(selectedId);

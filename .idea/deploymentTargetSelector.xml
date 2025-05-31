@@ -2,8 +2,29 @@
 <project version="4">
   <component name="deploymentTargetSelector">
     <selectionStates>
-      <SelectionState runConfigName="Unnamed">
-        <option name="selectionMode" value="DROPDOWN" />
+      <SelectionState runConfigName="Heart Ease">
+        <option name="selectionMode" value="DIALOG" />
+        <DropdownSelection timestamp="2025-05-31T20:48:35.400853500Z">
+          <Target type="DEFAULT_BOOT">
+            <handle>
+              <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\nduvh\.android\avd\Pixel_8_Pro_API_35.avd" />
+            </handle>
+          </Target>
+        </DropdownSelection>
+        <DialogSelection>
+          <targets>
+            <Target type="DEFAULT_BOOT">
+              <handle>
+                <DeviceId pluginId="PhysicalDevice" identifier="serial=RFCX107VVTW" />
+              </handle>
+            </Target>
+            <Target type="DEFAULT_BOOT">
+              <handle>
+                <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\nduvh\.android\avd\Pixel_8_Pro_API_35.avd" />
+              </handle>
+            </Target>
+          </targets>
+        </DialogSelection>
       </SelectionState>
     </selectionStates>
   </component>
