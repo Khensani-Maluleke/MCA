@@ -144,12 +144,6 @@ public class ChatWindow extends AppCompatActivity {
                                     intent.putExtra("partner_name", name);
                                     startActivity(intent);
 
-                                    // Example: Launch a new ChatDetail activity
-                                    /*
-                                    Intent intent = new Intent(ChatWindow.this, ChatDetailActivity.class);
-                                    intent.putExtra("partner_name", finalName);
-                                    startActivity(intent);
-                                    */
                                 });
 
                             } catch (JSONException e) {
@@ -166,65 +160,3 @@ public class ChatWindow extends AppCompatActivity {
         });
     }
 }
-
-//package com.example.mcpro.ChatFunctionality;
-//
-//import android.os.Bundle;
-//import android.widget.Toast;
-//
-//import androidx.activity.EdgeToEdge;
-//import androidx.appcompat.app.AppCompatActivity;
-//import androidx.core.graphics.Insets;
-//import androidx.core.view.ViewCompat;
-//import androidx.core.view.WindowInsetsCompat;
-//
-//import com.android.volley.Request;
-//import com.android.volley.RequestQueue;
-//import com.android.volley.toolbox.JsonArrayRequest;
-//import com.android.volley.toolbox.Volley;
-//import com.example.mcpro.R;
-//import com.example.mcpro.utils.SessionManager;
-//
-//import org.json.JSONException;
-//import org.json.JSONObject;
-//
-//public class ChatWindow extends AppCompatActivity {
-//
-//    @Override
-//    protected void onCreate(Bundle savedInstanceState) {
-//        super.onCreate(savedInstanceState);
-//        EdgeToEdge.enable(this);
-//        setContentView(R.layout.activity_chat_window);
-//
-//        SessionManager sessionManager = new SessionManager(ChatWindow.this);
-//        String username = sessionManager.getUsername();
-//        String role = sessionManager.getRole();
-//        fetchSessions(username, role);
-//    }
-//
-//    void fetchSessions(String userName, String role){
-//        RequestQueue queue = Volley.newRequestQueue(this);
-//        String url = "https://lamp.ms.wits.ac.za/home/s2815983/get_sessions.php?username="+userName+"?role="+role;
-//
-//        JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET , url , null,
-//                response->{
-//                    messageList.clear();
-//                    for(int i = 0 ; i < response.length() ; i++){
-//                        try {
-//                            JSONObject obj = response.getJSONObject(i);
-//                            boolean isUser = obj.getInt("status") == 1;
-//                            String msg = obj.getString("chat");
-//
-//                            messageList.add(new Message(msg,isUser));
-//                        } catch(JSONException e) {
-//                            e.printStackTrace();
-//                        }
-//                    }
-//                    chatAdapter.notifyDataSetChanged();
-//                },
-//                error->{
-//                    Toast.makeText(ChatWindow.this, "Failed to fetch messages.", Toast.LENGTH_SHORT).show();
-//        });
-//        queue.add(request);
-//    }
-//}

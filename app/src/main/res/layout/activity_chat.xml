@@ -23,16 +23,16 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:paddingTop="0dp">
+        android:paddingTop="50dp">
 
         <!-- Fixed Top Bar -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="60dp"
-            android:orientation="horizontal"
+            android:background="#66000000"
             android:gravity="center_vertical"
-            android:padding="10dp"
-            android:background="#66000000">
+            android:orientation="horizontal"
+            android:padding="10dp">
 
 
             <!-- Profile Icon -->
@@ -77,9 +77,9 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="#66000000"
             android:orientation="horizontal"
-            android:padding="8dp"
-            android:background="#66000000">
+            android:padding="8dp">
 
             <EditText
                 android:id="@+id/messageInput"

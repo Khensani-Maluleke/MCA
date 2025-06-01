@@ -28,9 +28,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public class ChatActivity extends AppCompatActivity {
@@ -71,7 +74,8 @@ public class ChatActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String content = messageInput.getText().toString().trim();
                 if (!content.isEmpty()) {
-                    messageList.add(new Message(content, true)); // sent message
+                    String timestamp = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
+                    messageList.add(new Message(content, true, timestamp)); // sent message
                     chatAdapter.notifyItemRangeInserted(messageList.size() - 1 , 1);
                     chatRecyclerView.scrollToPosition(messageList.size() - 1);
                     sendMessage(sessionId, content);
@@ -79,7 +83,7 @@ public class ChatActivity extends AppCompatActivity {
                 }
             }
         });
-        Toast.makeText(this, sender_key, Toast.LENGTH_SHORT).show();
+
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -103,6 +107,7 @@ public class ChatActivity extends AppCompatActivity {
 
         SessionManager sessionManager = new SessionManager(ChatActivity.this);
         String key = sessionManager.getRole();
+
         StringRequest postRequest = new StringRequest(Request.Method.POST, url, response -> {
             Log.d("ChatActivity", "Message sent. Refreshing messages.");
             fetchMessage(sessionId);
@@ -128,17 +133,22 @@ public class ChatActivity extends AppCompatActivity {
 
         SessionManager sessionManager = new SessionManager(ChatActivity.this);
         String key = sessionManager.getRole();
-
         JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET , url , null,
                 response->{
                     messageList.clear();
-                    for(int i = 0 ; i < response.length() ; i++){
+                    for(int i = 0 ; i < response.length(); i++){
                         try {
                             JSONObject obj = response.getJSONObject(i);
                             boolean isUser = obj.getInt("status") == 1;
+                            String sender_key = obj.getString("sender_key");
                             String msg = obj.getString("chat");
+                            String timestamp = obj.getString("time");
 
-                            messageList.add(new Message(msg,true));
+                            if(key.equals(sender_key)){
+                                messageList.add(new Message(msg,true, timestamp));
+                            } else {
+                                messageList.add(new Message(msg,false, timestamp));
+                            }
                         } catch(JSONException e) {
                             e.printStackTrace();
                         }
@@ -150,59 +160,3 @@ public class ChatActivity extends AppCompatActivity {
         queue.add(request);
     }
 }
-//package com.example.mcpro.ChatFunctionality;
-//
-//import android.os.Bundle;
-//import android.view.View;
-//import android.widget.Button;
-//import android.widget.EditText;
-//import android.widget.ImageButton;
-//
-//import androidx.appcompat.app.AppCompatActivity;
-//import androidx.recyclerview.widget.LinearLayoutManager;
-//import androidx.recyclerview.widget.RecyclerView;
-//
-//import com.example.mcpro.R;
-//
-//import java.util.ArrayList;
-//import java.util.List;
-//
-//public class ChatActivity extends AppCompatActivity {
-//
-//    private RecyclerView chatRecyclerView;
-//    private EditText messageInput;
-//    private ImageButton sendButton;
-//    private ChatAdapter chatAdapter;
-//    private List<Message> messageList;
-//
-//    @Override
-//    protected void onCreate(Bundle savedInstanceState) {
-//        super.onCreate(savedInstanceState);
-//        setContentView(R.layout.activity_chat);
-//
-//        chatRecyclerView = findViewById(R.id.chatRecyclerView);
-//        messageInput = findViewById(R.id.messageInput);
-//        sendButton = findViewById(R.id.sendButton);
-//
-//        messageList = new ArrayList<>();
-//        chatAdapter = new ChatAdapter(messageList);
-//
-//        chatRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-//        chatRecyclerView.setAdapter(chatAdapter);
-//
-//        sendButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                String content = messageInput.getText().toString().trim();
-//                if (!content.isEmpty()) {
-//                    messageList.add(new Message(content, true)); // sent message
-//                    messageList.add(new Message("Echo: " + content, false)); // simulate reply
-//
-//                    chatAdapter.notifyItemRangeInserted(messageList.size() - 2, 2);
-//                    chatRecyclerView.scrollToPosition(messageList.size() - 1);
-//                    messageInput.setText("");
-//                }
-//            }
-//        });
-//    }
-//}
