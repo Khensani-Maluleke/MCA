@@ -4,7 +4,7 @@
     <selectionStates>
       <SelectionState runConfigName="Heart Ease">
         <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2025-06-01T13:59:22.323545Z">
+        <DropdownSelection timestamp="2025-06-01T16:14:16.005147900Z">
           <Target type="DEFAULT_BOOT">
             <handle>
               <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\nduvh\.android\avd\Pixel_8_Pro_API_35.avd" />

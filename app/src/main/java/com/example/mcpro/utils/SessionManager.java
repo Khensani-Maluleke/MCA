@@ -63,7 +63,7 @@ public class SessionManager {
 
     // Store email
     public void setEmail(String email) {
-        editor.putString(KEY_USERNAME, email);
+        editor.putString(KEY_EMAIL, email);
         editor.apply();
     }
 

@@ -56,17 +56,7 @@ public class EnterCodeActivity extends AppCompatActivity {
                 String code = getEnteredCode().trim();
                 if (code.length() == 6) {
                     // Send to backend or verify
-                    //verifyToken(code);
-                    // TODO: Send `code` to your backend for validation
-                    new MaterialAlertDialogBuilder(EnterCodeActivity.this)
-                            .setTitle("Code")
-                            .setMessage("You entered the code " + code)
-                            .setIcon(R.drawable.error_icon) // Replace with your own icon
-                            .setPositiveButton("OK", (dialog, which) -> {
-                                dialog.dismiss();
-                                //startActivity(new Intent(getApplicationContext(), ForgotPassword.class));
-                            })
-                            .show();
+                    verifyToken(code);
                 } else {
                     Toast.makeText(EnterCodeActivity.this, "Please enter all 6 digits", Toast.LENGTH_SHORT).show();
 

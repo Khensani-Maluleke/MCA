@@ -107,7 +107,6 @@ public class ForgotPassword extends AppCompatActivity {
             @Override
             public void onFailure(Call call, IOException e) {
                 // This runs on a background thread
-                Log.d("error", e.toString());
                 runOnUiThread(() ->
                         Toast.makeText(getApplicationContext(), "Something went wrong.", Toast.LENGTH_SHORT).show()
                 );
@@ -117,9 +116,7 @@ public class ForgotPassword extends AppCompatActivity {
             public void onResponse(Call call, Response response) throws IOException {
                 String res = response.body().string();  // Always get the body first
 
-                Log.d("DEBUG_RESPONSE", "Code: " + response.code() + ", Body: " + res);
                 if (response.isSuccessful()) {
-                    System.out.println("I am on onResponse");
                     // This also runs on a background thread
                     runOnUiThread(() -> {
                         Toast.makeText(getApplicationContext(), res, Toast.LENGTH_LONG).show();
